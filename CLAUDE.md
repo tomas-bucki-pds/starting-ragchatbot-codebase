@@ -10,6 +10,7 @@ uv sync                                                # install dependencies (P
 cd backend && uv run uvicorn app:app --reload --port 8000   # manual start
 ```
 
+- Always use `uv` (`uv sync`, `uv add`, `uv run ...`) to manage dependencies and run code; never use `pip` or invoke `python` directly.
 - The server must be started from `backend/`: it loads documents from `../docs` and persists ChromaDB to `./chroma_db` via relative paths.
 - Web UI at `http://localhost:8000`, API docs at `/docs`. Smoke test: `curl -X POST localhost:8000/api/query -H "Content-Type: application/json" -d '{"query":"..."}'`.
 - `ANTHROPIC_API_KEY` must be in the environment or in `.env` at the repo root (see `.env.example`). Without it the server starts but every query returns 500.
