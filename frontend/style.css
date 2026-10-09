@@ -245,6 +245,42 @@ header h1 {
     color: var(--text-secondary);
 }
 
+.sources-list {
+    list-style: none;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+}
+
+.source-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.6rem;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+a.source-chip {
+    color: var(--text-primary);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+a.source-chip:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+}
+
+.source-icon {
+    color: var(--text-secondary);
+}
+
 /* Markdown formatting styles */
 .message-content h1,
 .message-content h2,

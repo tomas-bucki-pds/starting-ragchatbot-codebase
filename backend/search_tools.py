@@ -89,22 +89,27 @@ class CourseSearchTool(Tool):
         """Format search results with course and lesson context"""
         formatted = []
         sources = []  # Track sources for the UI
-        
+        seen = set()  # Each (course, lesson) is listed once as a source
+
         for doc, meta in zip(results.documents, results.metadata):
             course_title = meta.get('course_title', 'unknown')
             lesson_num = meta.get('lesson_number')
-            
+
             # Build context header
             header = f"[{course_title}"
             if lesson_num is not None:
                 header += f" - Lesson {lesson_num}"
             header += "]"
-            
+
             # Track source for the UI
             source = course_title
             if lesson_num is not None:
                 source += f" - Lesson {lesson_num}"
-            sources.append(source)
+
+            key = (course_title, lesson_num)
+            if key not in seen:
+                seen.add(key)
+                sources.append({"text": source, "link": self._get_source_link(course_title, lesson_num)})
             
             formatted.append(f"{header}\n{doc}")
         
@@ -112,6 +117,13 @@ class CourseSearchTool(Tool):
         self.last_sources = sources
         
         return "\n\n".join(formatted)
+
+    def _get_source_link(self, course_title: str, lesson_num: Optional[int]) -> Optional[str]:
+        """Return the lesson link, falling back to the course link"""
+        link = None
+        if lesson_num is not None:
+            link = self.store.get_lesson_link(course_title, lesson_num)
+        return link or self.store.get_course_link(course_title)
 
 class ToolManager:
     """Manages available tools for the AI"""
