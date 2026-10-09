@@ -35,8 +35,8 @@ The course title is the unique ID everywhere (catalog ID, filters, chunk IDs `<t
 
 ## Claude API constraints
 
-The model is set in `backend/config.py` (`claude-sonnet-5-5`). That model rejects a non-default `temperature` and may return `thinking` blocks, so `ai_generator.py`:
-- sends `thinking: {"type": "between_tools"}` (lowest thinking setting) and no `temperature`;
+The model is set in `backend/config.py` (`claude-haiku-5-5`). That model rejects a non-default `temperature` and thinks by default (thinking counts toward `max_tokens`), so `ai_generator.py`:
+- sends `thinking: {"type": "disabled"}` and no `temperature` (disabled thinking is only accepted at effort `high` or below; the default is `medium`; `between_tools` is Sonnet 5.5-only and returns 400 here);
 - reads only `text` blocks from responses (`_extract_text`), never `content[0]`;
 - drops `thinking` blocks from the assistant turn before the follow-up call, because that call omits `tools` and replaying thinking blocks after such a change can be rejected.
 
