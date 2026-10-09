@@ -34,12 +34,12 @@ Provide only the direct answer to what was asked.
         self.model = model
         
         # Pre-build base API parameters
-        # Sonnet 5.5 rejects non-default temperature; "between_tools" is its lowest
-        # thinking setting (no extended thinking), closest to the previous behavior
+        # Haiku 5.5 rejects non-default temperature and thinks by default; thinking is
+        # disabled (allowed at the default "medium" effort) so it doesn't eat max_tokens
         self.base_params = {
             "model": self.model,
             "max_tokens": 800,
-            "thinking": {"type": "between_tools"}
+            "thinking": {"type": "disabled"}
         }
 
     @staticmethod

@@ -10,6 +10,7 @@ uv sync                                                # install dependencies (P
 cd backend && uv run uvicorn app:app --reload --port 8000   # manual start
 ```
 
+- Always use `uv` (`uv sync`, `uv add`, `uv run ...`) to manage dependencies and run code; never use `pip` or invoke `python` directly.
 - The server must be started from `backend/`: it loads documents from `../docs` and persists ChromaDB to `./chroma_db` via relative paths.
 - Web UI at `http://localhost:8000`, API docs at `/docs`. Smoke test: `curl -X POST localhost:8000/api/query -H "Content-Type: application/json" -d '{"query":"..."}'`.
 - `ANTHROPIC_API_KEY` must be in the environment or in `.env` at the repo root (see `.env.example`). Without it the server starts but every query returns 500.
@@ -34,8 +35,8 @@ The course title is the unique ID everywhere (catalog ID, filters, chunk IDs `<t
 
 ## Claude API constraints
 
-The model is set in `backend/config.py` (`claude-sonnet-5-5`). That model rejects a non-default `temperature` and may return `thinking` blocks, so `ai_generator.py`:
-- sends `thinking: {"type": "between_tools"}` (lowest thinking setting) and no `temperature`;
+The model is set in `backend/config.py` (`claude-haiku-5-5`). That model rejects a non-default `temperature` and thinks by default (thinking counts toward `max_tokens`), so `ai_generator.py`:
+- sends `thinking: {"type": "disabled"}` and no `temperature` (disabled thinking is only accepted at effort `high` or below; the default is `medium`; `between_tools` is Sonnet 5.5-only and returns 400 here);
 - reads only `text` blocks from responses (`_extract_text`), never `content[0]`;
 - drops `thinking` blocks from the assistant turn before the follow-up call, because that call omits `tools` and replaying thinking blocks after such a change can be rejected.
 

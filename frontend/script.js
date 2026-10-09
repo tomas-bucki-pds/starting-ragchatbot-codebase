@@ -125,7 +125,7 @@ function addMessage(content, type, sources = null, isWelcome = false) {
         html += `
             <details class="sources-collapsible">
                 <summary class="sources-header">Sources</summary>
-                <div class="sources-content">${sources.join(', ')}</div>
+                <ul class="sources-content sources-list">${sources.map(renderSource).join('')}</ul>
             </details>
         `;
     }
@@ -142,6 +142,14 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// Render a source as a list item linking to its lesson (URL kept in href only)
+function renderSource(source) {
+    const text = escapeHtml(source.text);
+    if (!source.link) return `<li><span class="source-chip">${text}</span></li>`;
+    const href = escapeHtml(source.link).replace(/"/g, '&quot;');
+    return `<li><a class="source-chip" href="${href}" target="_blank" rel="noopener noreferrer">${text}<span class="source-icon" aria-hidden="true">↗</span></a></li>`;
 }
 
 // Removed removeMessage function - no longer needed since we handle loading differently
